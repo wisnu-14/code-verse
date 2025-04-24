@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Materi;
-use App\Models\Kategori;
+use App\Models\kategori;
 use App\Models\SubMateri;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class MateriController extends Controller
 {

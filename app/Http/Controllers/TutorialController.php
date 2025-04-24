@@ -2,13 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Materi;
-use App\Models\Kategori;
-use App\Models\SubMateri;
+use App\Models\kategori;
 use App\Models\SubTutorial;
 use App\Models\Tutorial;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class TutorialController extends Controller
 {

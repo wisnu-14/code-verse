@@ -3,7 +3,7 @@
 use App\Models\Tutorial;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\Homecontroller;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MateriController;
 use App\Http\Controllers\TutorialController;
 use App\Http\Controllers\RequestMateriController;

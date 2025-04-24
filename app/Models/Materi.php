@@ -19,7 +19,7 @@ class Materi extends Model
 
     public function kategori()
     {
-        return $this->belongsTo(Kategori::class, 'kategori_id'); // pastikan 'kategori_id' sesuai dengan kolom di database
+        return $this->belongsTo(kategori::class, 'kategori_id'); // pastikan 'kategori_id' sesuai dengan kolom di database
     }
 
 
