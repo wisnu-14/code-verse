@@ -94,7 +94,7 @@
                                 @if ($materi->cover)
                                     <div class="col-md-3 cover-container" id="redirectButton"
                                         data-url="{{ route('materi.show', $materi->id) }}">
-                                        <img src="{{ asset('cover/' . $materi->cover) }}"
+                                        <img src="{{ asset('storage/cover/' . $materi->cover) }}"
                                             class="cover img-card rounded-start" alt="{{ $materi->cover }}"
                                             style="object-fit: cover;">
                                     </div>
@@ -119,7 +119,6 @@
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="dropdown-item btn-hapus">
-                                                            <!-- Icon Hapus -->
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="16"
                                                                 height="16" fill="currentColor"
                                                                 class="bi bi-trash3-fill" viewBox="0 0 16 16">
@@ -131,7 +130,6 @@
                                                     </form>
                                                     <a href="{{ route('materi.edit', $materi->id) }}"
                                                         class="dropdown-item btn-edit">
-                                                        <!-- Icon Edit -->
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="16"
                                                             height="16" fill="currentColor"
                                                             class="bi bi-pencil-square me-2" viewBox="0 0 16 16">
@@ -176,7 +174,7 @@
                 <div class="tambah-materi-container">
                     <div class="card main-card tambah-materi mb-3" onclick="toggleForm(this)">
                         <div class="row g-0">
-                            <div class="col-md-3" id="redirectButton">
+                            <div class="col-md-3 cover-tambah" id="redirectButton">
                                 <img src="{{ asset('image/assets/plus-logo.png') }}" class="rounded-start"
                                     width="200" alt="..." style="object-fit: cover; padding: 50px;">
                             </div>
@@ -248,7 +246,7 @@
                 </div>
             </div>
             <!-- Card Kecil di Sebelah Kanan -->
-            <div class="col-md-4 col-12 p-3 mb-3 small-card">
+            <div class="col-md-4 col-12 p-3 mb-3 small-card ">
                 <div class="collapse d-md-block container-sidebar" id="sidebarCollapse">
                     <h4 class="border-bottom pb-3">Artikel Populer 🔥</h4>
                     @foreach ($topViewedMateriByCategory as $categoryId => $materis)
@@ -256,13 +254,12 @@
                     @php
                         $category = \App\Models\Kategori::find($categoryId);
                     @endphp
-
                     <p>{{ $category->nama }}</p>
 
                     @foreach ($materis as $materi)
                         <div class="card mb-3 custom-card-side">
                             <a href="{{ route('materi.show', $materi->id) }}" class="materi-show-btn">
-                                <img src="{{ asset('cover/' . $materi->cover) }}    " alt="{{ $materi->judul }}" class="card-cover-img img-fluid " >
+                                <img src="{{ asset('storage/cover/' . $materi->cover) }}    " alt="{{ $materi->judul }}" class="card-cover-img img-fluid " >
                                 <div class="card-body-side">
                                     <h5 class="card-title-side">{{ $materi->judul }}</h5>
                                     <p class="card-text-side">{{ Str::limit($materi->deskripsi, 50) }}</p>

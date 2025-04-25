@@ -28,17 +28,17 @@ Route::middleware(['visitor'])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
         Route::get('/user', [DashboardController::class, 'user'])->name('user');
 
-        Route::post('/manageMateri', [MateriController::class, 'store']);
-        Route::get('/manageMateri', [MateriController::class, 'create'])->name('materi.create');
+        Route::post('/manage-materi', [MateriController::class, 'store']);
+        Route::get('/manage-materi', [MateriController::class, 'create'])->name('materi.create');
 
-        Route::get('/manageMateri/{id}/edit', [MateriController::class, 'edit'])->name('manageMateri.edit');
-        Route::put('/manageMateri/{id}', [MateriController::class, 'update'])->name('manageMateri.update');
+        Route::get('/manage-materi/{id}/edit', [MateriController::class, 'edit'])->name('manageMateri.edit');
+        Route::put('/manage-materi/{id}', [MateriController::class, 'update'])->name('manageMateri.update');
 
         Route::get('/requests', [RequestMateriController::class, 'index'])->name('requests');
         Route::delete('/requests/{id}', [RequestMateriController::class, 'destroy'])->name('requests.destroy');
 
-        Route::post('/manageTutorial', [TutorialController::class, 'store']);
-        Route::get('/manageTutorial', [TutorialController::class, 'create'])->name('tutorial.create');
+        Route::post('/manage-tutorial', [TutorialController::class, 'store']);
+        Route::get('/manage-tutorial', [TutorialController::class, 'create'])->name('tutorial.create');
         Route::post('/request-materi', [RequestMateriController::class, 'store'])->name('request.materi.store');
         // Route::get('/materi/{$id}', [MateriController::class, 'show'])->name('materi.show');
         Route::get('/tutorial/{$id}', [TutorialController::class, 'show'])->name('materi.show');

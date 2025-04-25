@@ -6,6 +6,7 @@ use App\Models\Materi;
 use App\Models\kategori;
 use App\Models\SubMateri;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class MateriController extends Controller
 {
@@ -26,11 +27,11 @@ class MateriController extends Controller
         $topViewedMateriByCategory = [];
         foreach ($categories as $category) {
             $topViewedMateriByCategory[$category->id] = Materi::where('kategori_id', $category->id)
-                                                                ->orderBy('views', 'desc')
-                                                                ->take(5)
-                                                                ->get();
+                ->orderBy('views', 'desc')
+                ->take(5)
+                ->get();
         }
-        return view('materi.index', compact('materis', 'kategoriList','topViewedMateriByCategory'));
+        return view('materi.index', compact('materis', 'kategoriList', 'topViewedMateriByCategory'));
     }
 
     public function create()
@@ -55,12 +56,18 @@ class MateriController extends Controller
 
         // Proses upload cover materi
         $foto_nama = null;
+
         if ($request->hasFile('cover')) {
             $foto_file = $request->file('cover');
+
+            // Buat nama file custom: ymdhis.ext
             $foto_ekstensi = $foto_file->extension();
             $foto_nama = date('ymdhis') . "." . $foto_ekstensi;
-            $foto_file->move(public_path('cover'), $foto_nama);
+
+            // Simpan ke storage/app/public/cover dengan nama tersebut
+            $foto_file->storeAs('cover', $foto_nama, 'public');
         }
+
 
         // Simpan data materi jika judul atau deskripsi diisi
         $materi = null;
@@ -81,8 +88,10 @@ class MateriController extends Controller
                 if ($request->hasFile("foto_sub_materi.$index")) {
                     $subFotoFile = $request->file("foto_sub_materi.$index");
                     $subFotoNama = date('ymdhis') . "_sub_" . $index . "." . $subFotoFile->extension();
-                    $subFotoFile->move(public_path('sub_foto'), $subFotoNama);
+
+                    $subFotoFile->storeAs('sub_foto', $subFotoNama, 'public');
                 }
+
 
                 SubMateri::create([
                     'materi_id' => $materi->id ?? null, // Tetap simpan jika materi tidak ada
@@ -95,7 +104,7 @@ class MateriController extends Controller
             }
         }
 
-        return redirect('/manageMateri')->with('success', 'Materi berhasil ditambahkan!');
+        return redirect('/manage-materi')->with('success', 'Materi berhasil ditambahkan!');
     }
 
 
@@ -115,12 +124,12 @@ class MateriController extends Controller
         $topViewedMateriByCategory = [];
         foreach ($categories as $category) {
             $topViewedMateriByCategory[$category->id] = Materi::where('kategori_id', $category->id)
-                                                                ->orderBy('views', 'desc')
-                                                                ->take(5)
-                                                                ->get();
+                ->orderBy('views', 'desc')
+                ->take(5)
+                ->get();
         }
 
-        return view('materi.show', compact('materi', 'subMateri','topViewedMateriByCategory'));
+        return view('materi.show', compact('materi', 'subMateri', 'topViewedMateriByCategory'));
     }
 
 
@@ -152,17 +161,19 @@ class MateriController extends Controller
         // Update cover jika ada file baru
         if ($request->hasFile('cover')) {
             // Hapus foto lama jika ada
-            if ($materi->cover && file_exists(public_path('cover/' . $materi->cover))) {
-                unlink(public_path('cover/' . $materi->cover));
+            if ($materi->cover && Storage::disk('public')->exists('cover/' . $materi->cover)) {
+                Storage::disk('public')->delete('cover/' . $materi->cover);
             }
 
             // Upload foto cover baru
             $coverFile = $request->file('cover');
             $coverName = date('ymdhis') . '.' . $coverFile->extension();
-            $coverFile->move(public_path('cover'), $coverName);
 
-            $materiData['cover'] = $coverName; // Simpan nama foto baru
+            $coverFile->storeAs('cover', $coverName, 'public'); // Simpan ke storage/app/public/cover
+
+            $materiData['cover'] = $coverName; // Simpan nama foto baru ke database
         }
+
 
         // Update materi
         $materi->update($materiData);
@@ -173,22 +184,24 @@ class MateriController extends Controller
 
             // Menangani foto sub-materi
             $fotoSubMateri = null;
+
             if ($request->hasFile("foto_sub_materi.$index")) {
                 // Hapus foto lama jika ada
                 if ($subMateriId && ($existingSubMateri = SubMateri::find($subMateriId))) {
-                    $fotoPath = public_path('sub_foto/' . $existingSubMateri->foto);
-                    if (is_file($fotoPath)) { // Pastikan path adalah file, bukan direktori
-                        unlink($fotoPath); // Hapus file foto lama
+                    // Cek apakah file ada di storage dan hapus
+                    $fotoPath = 'sub_foto/' . $existingSubMateri->foto;
+                    if (Storage::disk('public')->exists($fotoPath)) {
+                        Storage::disk('public')->delete($fotoPath); // Hapus file foto lama
                     }
                 }
-
+            
                 // Upload foto sub-materi baru
                 $file = $request->file("foto_sub_materi.$index");
                 $fotoSubMateri = date('ymdhis') . "_sub_" . $index . "." . $file->extension();
-                $file->move(public_path('sub_foto'), $fotoSubMateri); // Simpan foto baru
+            
+                // Simpan foto baru ke storage/app/public/sub_foto
+                $file->storeAs('sub_foto', $fotoSubMateri, 'public'); // Menggunakan storage
             }
-
-
             // Update atau buat sub-materi baru
             SubMateri::updateOrCreate(
                 ['materi_id' => $materi->id, 'id' => $subMateriId], // ID sub-materi jika ada
@@ -221,10 +234,23 @@ class MateriController extends Controller
 
     public function destroy(Materi $materi)
     {
-        if ($materi->cover && file_exists(public_path('cover/' . $materi->cover))) {
-            unlink(public_path('cover/' . $materi->cover));
+        if ($materi) {
+            // Hapus cover foto jika ada
+            if ($materi->cover && Storage::disk('public')->exists('cover/' . $materi->cover)) {
+                Storage::disk('public')->delete('cover/' . $materi->cover); // Hapus file cover
+            }
+        
+            // Hapus semua sub-foto yang terkait dengan materi
+            foreach ($materi->subMateri as $sub) {
+                if ($sub->foto && Storage::disk('public')->exists('sub_foto/' . $sub->foto)) {
+                    Storage::disk('public')->delete('sub_foto/' . $sub->foto); // Hapus file sub foto
+                }
+            }
+        
+            // Hapus materi (data lainnya)
+            $materi->delete();
         }
-        $materi->delete();
+        
         return redirect()->route('materi.index')->with('success', 'Materi berhasil dihapus.');
     }
 }

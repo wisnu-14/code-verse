@@ -35,7 +35,7 @@
                                 <p class="mt-3">{{ $sub->penjelasan }}</p>
                                 @if ($sub->foto)
                                     <div class="zoom-container">
-                                        <img src="{{ asset('sub_foto/' . $sub->foto) }}" alt="{{ $sub->judul }}"
+                                        <img src="{{ asset('storage/sub_foto/' . $sub->foto) }}" alt="{{ $sub->judul }}"
                                             class="img-fluid mb-2 mt-2 zoom-image" width="80%">
                                     </div>
                                     <div id="image-modal" class="modal" onclick="closeModal()">
@@ -109,7 +109,7 @@
                         @foreach ($materis as $materi)
                             <div class="card mb-3 custom-card">
                                 <a href="{{ route('materi.show', $materi->id) }}" class="materi-show-btn">
-                                    <img src="{{ asset('cover/' . $materi->cover) }}" alt="{{ $materi->judul }}" class="card-cover-img img-fluid " >
+                                    <img src="{{ asset('storage/cover/' . $materi->cover) }}" alt="{{ $materi->judul }}" class="card-cover-img img-fluid " >
                                     <div class="card-body">
                                         <h5 class="card-title">{{ $materi->judul }}</h5>
                                         <p class="card-text">{{ Str::limit($materi->deskripsi, 50) }}</p>

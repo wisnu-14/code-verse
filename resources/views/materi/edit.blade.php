@@ -183,7 +183,8 @@
                     @endforeach
                 </div>
 
-                <button type="button" class="btn btn-secondary mb-3" onclick="addSubMateri()">Tambah Sub Materi</button>
+                <button type="button" class="btn btn-warning mb-3" onclick="addSubMateri()">Tambah Sub Materi</button>
+                <a href="{{ route('materi.index') }}" class="btn btn-primary mb-3">Kembali</a>
                 <button type="submit" class="btn btn-primary mb-3">Update Materi</button>
             </form>
         </div>

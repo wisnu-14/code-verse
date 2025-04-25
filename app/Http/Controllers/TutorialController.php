@@ -85,7 +85,7 @@ class TutorialController extends Controller
                 ]);
             }
         }
-        return redirect('/manageTutorial')->with('success', 'Materi berhasil ditambahkan!');
+        return redirect('/manage-tutorial')->with('success', 'Materi berhasil ditambahkan!');
     }
 
     public function show($id)

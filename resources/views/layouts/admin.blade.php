@@ -155,13 +155,13 @@ a.sidebar-link:hover {
                     </a>
                 </li>
                 <li class="sidebar-item {{ request()->is('manageMateri') ? 'active' : '' }}">
-                    <a href="/manageMateri" class="sidebar-link">
+                    <a href="/manage-materi" class="sidebar-link">
                         <i class="bi bi-file-earmark-code"></i>
                         <span>Materi</span>
                     </a>
                 </li>
                 <li class="sidebar-item {{ request()->is('manageTutorial') ? 'active' : '' }}">
-                    <a href="/manageTutorial" class="sidebar-link">
+                    <a href="/manage-tutorial" class="sidebar-link">
                         <i class="bi bi-code-slash"></i>
                         <span>Tutorial</span>
                     </a>
